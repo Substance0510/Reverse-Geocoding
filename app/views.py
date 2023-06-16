@@ -1,9 +1,8 @@
 from flask import request
 from flask_restful import Resource
-from app import api, db
-from app.models import Task
-from app.utils import create_point_pairs
-from app.tasks import save_task, get_task
+from app import api
+from app.utils import save_file
+from app.tasks import create_task, get_task, proceed_task
 
 
 class CalculateDistancesAPI(Resource):
@@ -15,18 +14,14 @@ class CalculateDistancesAPI(Resource):
         if not uploaded_file:
             return {"error": "No file provided"}, 400
 
-        # Read the CSV data from the file
-        csv_data = uploaded_file.read().decode('utf-8')
+        task_id, task_status = create_task()
+        file_name = f"points_{task_id}.csv"
+        file_path = save_file(uploaded_file, file_name)
 
-        # Create point pairs
-        point_pairs = create_point_pairs(csv_data)
+        # Create a delayed task
+        proceed_task(task_id, file_path)
 
-        # Save task and return task_id
-        task_id = "<XXXX>"
-        status = "running"
-        save_task(task_id, status, data=None)
-
-        return {"task_id": task_id, "status": status}, 200
+        return {"task_id": task_id, "status": task_status}, 200
 
 
 class GetResultAPI(Resource):
@@ -37,7 +32,7 @@ class GetResultAPI(Resource):
         task = get_task(task_id)
 
         if task:
-            return {"task_id": task.task_id, "status": task.status, "data": task.data}, 200
+            return {"task_id": task.id, "status": task.status, "data": task.result}, 200
         else:
             return {"error": "Task not found"}, 404
 

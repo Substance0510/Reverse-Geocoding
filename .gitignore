@@ -154,7 +154,9 @@ cython_debug/
 
 # Database file
 db/
-*.db
+
+# Static files
+app/uploads/
 
 # IDE-specific files
 .vscode/

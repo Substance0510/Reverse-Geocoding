@@ -62,7 +62,8 @@ The task results are persisted in a SQLite database located at `db/database.db`.
 By default, the API is configured to use a SQLite database. However, you can modify the database configuration in `app/__init__.py` to use a different database (e.g., PostgreSQL, MySQL) by changing the `SQLALCHEMY_DATABASE_URI` parameter.
 
 ## Testing
-curl -X POST -F "file=@<path>/test_points.csv" http://localhost:5000/api/calculateDistances
+curl -X POST -F "file=@<path>/test_points.csv" http://localhost:5000/api/calculateDistances  
+curl http://localhost:5000/api/getResult?task_id=1
 
 ## Dependencies
 
