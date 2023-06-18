@@ -7,6 +7,9 @@ from app.tasks import create_task, get_task, proceed_task
 
 class CalculateDistancesAPI(Resource):
     def post(self):
+        print("Received a POST request to /api/calculateDistances")
+        print(request.files)
+
         # Get the uploaded file from the request
         uploaded_file = request.files['file']
 
@@ -19,7 +22,7 @@ class CalculateDistancesAPI(Resource):
         file_path = save_file(uploaded_file, file_name)
 
         # Create a delayed task
-        proceed_task(task_id, file_path)
+        proceed_task.delay(task_id, file_path)
 
         return {"task_id": task_id, "status": task_status}, 200
 
@@ -37,5 +40,9 @@ class GetResultAPI(Resource):
             return {"error": "Task not found"}, 404
 
 
-api.add_resource(CalculateDistancesAPI, '/api/calculateDistances')
-api.add_resource(GetResultAPI, '/api/getResult')
+def initialize_routes(api):
+    api.add_resource(CalculateDistancesAPI, '/api/calculateDistances')
+    api.add_resource(GetResultAPI, '/api/getResult')
+
+
+initialize_routes(api)

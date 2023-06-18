@@ -5,10 +5,8 @@ from itertools import combinations
 from werkzeug.utils import secure_filename
 from geopy.distance import geodesic
 
-from app import app
 
-
-def get_points(file_path):
+def get_points(app, file_path):
     points = {}
     points_addresses = []
 
@@ -26,7 +24,7 @@ def get_points(file_path):
 
             points[name] = (latitude, longitude)
 
-            adress = get_address(latitude, longitude)
+            adress = get_address(app, latitude, longitude)
             points_addresses.append({
                 'name': name,
                 'address': adress,
@@ -50,7 +48,7 @@ def validate_coordinates(latitude, longitude):
 
 
 def save_file(file, filename):
-    upload_folder = app.config['UPLOAD_FOLDER']
+    upload_folder = '/opt/projects/reverse-geocoding/Reverse-Geocoding/uploads'
     makedirs(upload_folder, exist_ok=True)
     file_path = path.join(upload_folder, secure_filename(filename))
     file.save(file_path)
@@ -63,7 +61,7 @@ def remove_file(file_path):
     remove(file_path)
 
 
-def get_address(latitude, longitude):
+def get_address(app, latitude, longitude):
     api_url = app.config['GEOCODING_API_URL']
     accept_language = 'en-us,en;q=0.5'
     url = f"{api_url}?lat={latitude}&lon={longitude}&format=json&accept-language={accept_language}"
