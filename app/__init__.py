@@ -17,12 +17,21 @@ def create_app():
     db.init_app(app)
     api.init_app(app)
 
-    # Create the tables if they don't exist
     with app.app_context():
-        # db.drop_all()  # Drop existing tables
+        # Create the db folder if it doesn't exist
+        db_folder = os.path.join(app.root_path, 'db')
+        os.makedirs(db_folder, exist_ok=True)
+
+        # Create the db.sqlite3 file if it doesn't exist
+        db_file = os.path.join(db_folder, 'db.sqlite3')
+        if not os.path.isfile(db_file):
+            open(db_file, 'a').close()
+
+        # Create the uploads folder if it doesn't exist
+        uploads_folder = app.config['UPLOAD_FOLDER']
+        os.makedirs(uploads_folder, exist_ok=True)
+
         db.create_all()
         db.session.commit()
-
-    from app import views
 
     return app

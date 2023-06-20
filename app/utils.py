@@ -18,9 +18,13 @@ def get_points(app, file_path):
         for point_data in csv_reader:
             name = point_data[0]
 
-            latitude, longitude = validate_coordinates(
+            validated_coordinates = validate_coordinates(
                 point_data[1], point_data[2]
             )
+            if not validated_coordinates:
+                continue
+
+            latitude, longitude = validated_coordinates
 
             points[name] = (latitude, longitude)
 
@@ -36,13 +40,13 @@ def get_points(app, file_path):
 
 
 def validate_coordinates(latitude, longitude):
-    latitude = float(latitude)
-    longitude = float(longitude)
+    try:
+        latitude, longitude = float(latitude), float(longitude)
+    except ValueError:
+        return False  # Invalid coordinates
 
-    if not (-90 <= latitude <= 90):
-        raise ValueError("Invalid latitude value")
-    if not (-180 <= longitude <= 180):
-        raise ValueError("Invalid longitude value")
+    if not (-90 <= latitude <= 90) or not (-180 <= longitude <= 180):
+        return False  # Invalid coordinates
 
     return latitude, longitude
 
@@ -69,7 +73,7 @@ def get_address(app, latitude, longitude):
     data = response.json()
 
     if response.status_code == 200:
-        return str(data['display_name'])
+        return str(data.get('display_name', 'Unknown address'))
 
     return 'Unknown address'
 
