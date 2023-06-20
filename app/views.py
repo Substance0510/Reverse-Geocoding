@@ -7,9 +7,6 @@ from app.tasks import create_task, get_task, proceed_task
 
 class CalculateDistancesAPI(Resource):
     def post(self):
-        print("Received a POST request to /api/calculateDistances")
-        print(request.files)
-
         # Get the uploaded file from the request
         uploaded_file = request.files['file']
 

@@ -1,6 +1,6 @@
 import csv
 import requests
-from os import path, makedirs, remove
+from os import path, makedirs, remove, getcwd
 from itertools import combinations
 from werkzeug.utils import secure_filename
 from geopy.distance import geodesic
@@ -18,9 +18,13 @@ def get_points(app, file_path):
         for point_data in csv_reader:
             name = point_data[0]
 
+            if len(point_data) < 3:
+                continue
+
             validated_coordinates = validate_coordinates(
                 point_data[1], point_data[2]
             )
+
             if not validated_coordinates:
                 continue
 
@@ -52,7 +56,7 @@ def validate_coordinates(latitude, longitude):
 
 
 def save_file(file, filename):
-    upload_folder = '/opt/projects/reverse-geocoding/Reverse-Geocoding/uploads'
+    upload_folder = path.join(getcwd(), 'uploads')
     makedirs(upload_folder, exist_ok=True)
     file_path = path.join(upload_folder, secure_filename(filename))
     file.save(file_path)
