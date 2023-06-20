@@ -12,13 +12,13 @@ Reverse-Geocoding/
 │ ├── init.py  
 │ ├── models.py  
 │ ├── utils.py  
-│ ├── views.py 
-│ └── tasks.py 
+│ ├── views.py  
+│ └── tasks.py  
 ├── db/  
 │ └── db.sqlite3  
 ├── ssl/  
-│ └── cert.pem 
-│ └── key.pem
+│ └── cert.pem  
+│ └── key.pem  
 ├── requirements.txt  
 └── run.py  
 

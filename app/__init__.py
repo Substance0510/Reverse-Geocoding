@@ -19,7 +19,7 @@ def create_app():
 
     with app.app_context():
         # Create the db folder if it doesn't exist
-        db_folder = os.path.join(app.root_path, 'db')
+        db_folder = os.path.join(app.root_path, '..', 'db')
         os.makedirs(db_folder, exist_ok=True)
 
         # Create the db.sqlite3 file if it doesn't exist
