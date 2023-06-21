@@ -1,12 +1,15 @@
 import csv
-import requests
+from geopy.geocoders import Nominatim
+from geopy.distance import geodesic
 from os import path, makedirs, remove, getcwd
 from itertools import combinations
 from werkzeug.utils import secure_filename
-from geopy.distance import geodesic
 
 
-def get_points(app, file_path):
+geolocator = Nominatim(user_agent='reverse-geocoding')
+
+
+def get_points(file_path):
     points = {}
     points_addresses = []
 
@@ -32,7 +35,7 @@ def get_points(app, file_path):
 
             points[name] = (latitude, longitude)
 
-            adress = get_address(app, latitude, longitude)
+            adress = get_address(latitude, longitude)
             points_addresses.append({
                 'name': name,
                 'address': adress,
@@ -69,17 +72,11 @@ def remove_file(file_path):
     remove(file_path)
 
 
-def get_address(app, latitude, longitude):
-    api_url = app.config['GEOCODING_API_URL']
-    accept_language = 'en-us,en;q=0.5'
-    url = f"{api_url}?lat={latitude}&lon={longitude}&format=json&accept-language={accept_language}"
-    response = requests.get(url)
-    data = response.json()
+def get_address(latitude, longitude):
+    location = geolocator.reverse((latitude, longitude), language='en')
+    address = location.address if location else 'Unknown address'
 
-    if response.status_code == 200:
-        return str(data.get('display_name', 'Unknown address'))
-
-    return 'Unknown address'
+    return address
 
 
 def get_point_distances(points):

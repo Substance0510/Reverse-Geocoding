@@ -10,7 +10,6 @@ api = Api()
 def create_app():
     app = Flask(__name__)
     app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///../db/db.sqlite3'
-    app.config['GEOCODING_API_URL'] = 'https://nominatim.openstreetmap.org/reverse'
     app.config['CELERY_BROKER_URL'] = 'redis://localhost:6379'
 
     db.init_app(app)

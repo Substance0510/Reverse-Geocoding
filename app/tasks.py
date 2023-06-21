@@ -42,7 +42,7 @@ def proceed_task(task_id, file_path):
         if not task:
             raise ValueError('Task not found')
 
-        points, points_addresses = get_points(app, file_path)
+        points, points_addresses = get_points(file_path)
         data['points'] = points_addresses
 
         update_task(task_id, 'running', data)
